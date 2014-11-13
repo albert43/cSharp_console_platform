@@ -10,12 +10,13 @@ namespace ConsolePlatform
     {
         enum LIBENUM
         {
-            DEVELOP
+            DEVELOP,
+            CONFIG
         }
 
         static void Main(string[] args)
         {
-            Entry(LIBENUM.DEVELOP);
+            Entry(LIBENUM.CONFIG);
         }
 
         static void Entry(LIBENUM Index)
@@ -25,11 +26,22 @@ namespace ConsolePlatform
                 case LIBENUM.DEVELOP:
                     develop();
                     break;
+                case LIBENUM.CONFIG:
+                    config();
+                    break;
             }
         }
 
         static void develop()
         { 
+        }
+
+        static void config()
+        {
+            Al.Config.Sample s = new Al.Config.Sample();
+            s.setSample();
+            s.getSample();
+
         }
     }
 }
