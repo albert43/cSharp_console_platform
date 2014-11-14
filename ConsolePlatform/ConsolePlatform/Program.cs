@@ -8,28 +8,14 @@ namespace ConsolePlatform
 {
     class Program
     {
-        enum LIBENUM
-        {
-            DEVELOP
-        }
-
         static void Main(string[] args)
         {
-            Entry(LIBENUM.DEVELOP);
+            Database();
         }
 
-        static void Entry(LIBENUM Index)
+        static void Database()
         {
-            switch (Index)
-            {
-                case LIBENUM.DEVELOP:
-                    develop();
-                    break;
-            }
-        }
-
-        static void develop()
-        { 
+            Al.Database.TblStudent.InitTableStudent();
         }
     }
 }

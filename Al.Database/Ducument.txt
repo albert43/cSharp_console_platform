@@ -1,0 +1,27 @@
+﻿#	SQL library
+	#	System.Data.SQLite
+		#	Download page: http://system.data.sqlite.org/index.html/doc/trunk/www/downloads.wiki
+		#	The steps for adding "Precompiled Binaries for 64-bit Windows (.NET Framework 4.5)"
+			#	Using , The non-mixed-mode version.
+				#	http://system.data.sqlite.org/downloads/1.0.94.0/sqlite-netFx45-binary-x64-2012-1.0.94.0.zip
+			#	Unzip the compressed file.
+			#	Select the Al.Database and ConsolePlatform .NET Framewrok version to 4.5.
+			#	Add System.Data.SQLite.dll to References.
+			#	Copy SQLite.Interop.dll to "ConsolePlatform\bin\Debug\" 
+				#	Somehow this file can not be add in the References.
+				#	Furthermore, assemblies linked against the .NET Framework 4.0 (or higher) cannot be loaded by 
+					any versions of the .NET Framework prior to 4.0.
+		#	The steps for adding "Precompiled Binaries for 64-bit Windows (.NET Framework 3.5 SP1)"
+			#	Using , The non-mixed-mode version.
+				#	http://system.data.sqlite.org/downloads/1.0.94.0/sqlite-netFx35-binary-x64-2008-1.0.94.0.zip
+			#	Unzip the compressed file.
+			#	Select the Al.Database and ConsolePlatform .NET Framewrok version to 3.5.
+			#	Add System.Data.SQLite.dll to References.
+			#	Copy SQLite.Interop.dll to "ConsolePlatform\bin\Debug\" 
+				#	Somehow this file can not be add in the References.
+				#	Furthermore, assemblies linked against the .NET Framework 4.0 (or higher) cannot be loaded by 
+					any versions of the .NET Framework prior to 4.0.
+
+
+		
+
