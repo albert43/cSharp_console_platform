@@ -240,6 +240,11 @@ namespace Al.Database
 
         /// <summary>
         /// {0}: table-name
+        /// </summary>
+        private readonly String GET_TABLE_FMT = ".schema {0}";
+
+        /// <summary>
+        /// {0}: table-name
         /// {1}: column-name(s)
         /// {2}: value(s)
         /// </summary>
@@ -426,6 +431,70 @@ namespace Al.Database
             m_sqliteCmd = m_sqliteConn.CreateCommand();
             m_sqliteCmd.CommandText = String.Format(CREATE_TABLE_FMT, strTableName, strColumnDef);
             m_sqliteCmd.ExecuteNonQuery();
+            m_sqliteConn.Close();
+        }
+
+        public void getTable(String strTableName, ref COLUMN_DEF_S[] ColumnDef)
+        {
+            // These is how you list the schema of an SQLite database
+            m_sqliteCmd = m_sqliteConn.CreateCommand();
+            m_sqliteCmd.CommandText = "SELECT * FROM sqlite_master WHERE type = 'table'";
+            
+            m_sqliteConn.Open();
+            m_sqliteCmd.ExecuteNonQuery();
+
+            // Populate the reader
+            SQLiteDataReader reader = m_sqliteCmd.ExecuteReader();
+
+            // Step through each row
+            while (reader.Read())
+            {
+                for (int iColumn = 0; iColumn < reader.VisibleFieldCount; iColumn++)
+                {
+                    // This will give you the name of the current row's column
+                    string columnName = reader.GetName(iColumn);
+                    System.Console.Write(columnName + "\t");
+                }
+                System.Console.WriteLine("");
+                for (int iColumn = 0; iColumn < reader.FieldCount; iColumn++)
+                {
+                    // This will give you the value of the current row's column
+                    string columnValue = reader[iColumn].ToString();
+                    System.Console.Write(columnValue + "\t");
+                }
+                System.Console.WriteLine("");
+            }
+
+            m_sqliteConn.Close();
+        }
+
+        public void getTable1(String strTableName, ref COLUMN_DEF_S[] ColumnDef)
+        {
+            System.Data.DataTable tbl;
+
+            m_sqliteConn.Open();
+            tbl = m_sqliteConn.GetSchema("Tables");
+            
+            System.Data.DataColumn col;
+            System.Console.WriteLine("Talbe");
+            for (int i = 0; i < tbl.Columns.Count; i++)
+            {
+                col = tbl.Columns[i];
+                System.Console.WriteLine(col.ColumnName);
+                System.Console.WriteLine(col.DataType);
+                System.Console.WriteLine("---------");
+            }
+
+            System.Data.DataTable columns = m_sqliteConn.GetSchema("Columns");
+            System.Console.WriteLine("Column");
+            for (int i = 0; i < tbl.Columns.Count; i++)
+            {
+                col = columns.Columns[i];
+                System.Console.WriteLine(col.ColumnName);
+                System.Console.WriteLine(col.DataType);
+                System.Console.WriteLine("---------");
+            }
+
             m_sqliteConn.Close();
         }
 
