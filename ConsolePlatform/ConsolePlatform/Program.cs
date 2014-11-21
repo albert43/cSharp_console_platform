@@ -13,18 +13,24 @@ namespace ConsolePlatform
         static String m_strDbPath = "Sample.db";
         static void Main(string[] args)
         {
-            Database();
-            Al.Database.DatabaseApi db = new DatabaseApi(m_strDbPath, "");
+            crateTable();
+            getTable();
             
         }
 
-        static void Database()
+        static void crateTable()
         {
             TblStudent tblStudent = new TblStudent("student", m_strDbPath, "");
             TblClass tblCalss = new TblClass("class", m_strDbPath, "");
 
             tblStudent.create();
             tblCalss.create();
+        }
+
+        static void getTable()
+        {
+            Al.Database.DatabaseApi db = new DatabaseApi(m_strDbPath, "");
+            db.getTable("student");
         }
     }
 }

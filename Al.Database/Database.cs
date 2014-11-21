@@ -241,7 +241,7 @@ namespace Al.Database
         /// <summary>
         /// {0}: table-name
         /// </summary>
-        private readonly String GET_TABLE_FMT = ".schema {0}";
+        private readonly String GET_TABLE_FMT = "SELECT sql FROM sqlite_master WHERE type = 'table' and tbl_name = '{0}'";
 
         /// <summary>
         /// {0}: table-name
@@ -308,6 +308,8 @@ namespace Al.Database
         //
         //  SQLite command tag.
         //
+        private readonly String[] PRIMARY_KEY_TAGS = { "PRIMARY KEY", "PRIMARY KEY ASC AUTOINCREMENT", "PRIMARY KEY DESC AUTOINCREMENT" };
+        private readonly String DEFAULT_TAG = "DEFAULT";
         private readonly String ASC_TAG = "ASC";
         private readonly String DESC_TAG = "DESC";
         private readonly String AUTOINCREMENT_TAG = "AUTOINCREMENT";
@@ -434,35 +436,58 @@ namespace Al.Database
             m_sqliteConn.Close();
         }
 
-        public void getTable(String strTableName, ref COLUMN_DEF_S[] ColumnDef)
+        public void getTable(String strTableName)
         {
+            COLUMN_DEF_S[] ColDef;
+            String strSchema;
+            String[] strScheCols;
+            int iCol = 0;
+            
+
             // These is how you list the schema of an SQLite database
             m_sqliteCmd = m_sqliteConn.CreateCommand();
-            m_sqliteCmd.CommandText = "SELECT * FROM sqlite_master WHERE type = 'table'";
-            
+            m_sqliteCmd.CommandText = String.Format(GET_TABLE_FMT, strTableName);
+
             m_sqliteConn.Open();
             m_sqliteCmd.ExecuteNonQuery();
 
             // Populate the reader
             SQLiteDataReader reader = m_sqliteCmd.ExecuteReader();
 
-            // Step through each row
-            while (reader.Read())
+            reader.Read();
+            strSchema = reader[0].ToString();
+            System.Console.Write(strSchema + "\t");
+            
+            //
+            //  Parser the schema.
+            //
+            strSchema = strSchema.Substring(strSchema.IndexOf("(") + 1);
+            strSchema = strSchema.Substring(0, strSchema.Length - 1);
+
+            strScheCols = strSchema.Split(',');
+            ColDef = new COLUMN_DEF_S[strScheCols.Length];
+            for (iCol = 0; iCol < strScheCols.Length; iCol++)
             {
-                for (int iColumn = 0; iColumn < reader.VisibleFieldCount; iColumn++)
+                ColDef[iCol] = new COLUMN_DEF_S();
+
+                //  Get column name.
+                ColDef[iCol].strColumnName = strScheCols[iCol].Substring(1, strScheCols[iCol].LastIndexOf('\'') - 1);
+                strScheCols[iCol] = strScheCols[iCol].Substring(strScheCols[iCol].IndexOf(' ') + 1);
+
+                //  Get data type.
+                for (int iType = 0; iType < DATA_TYPE_TAGS.Length; iType++)
                 {
-                    // This will give you the name of the current row's column
-                    string columnName = reader.GetName(iColumn);
-                    System.Console.Write(columnName + "\t");
+                    if (strScheCols[iCol].StartsWith(DATA_TYPE_TAGS[iType]) == true)
+                        ColDef[iCol].DataType = (DATA_T)iType;
                 }
-                System.Console.WriteLine("");
-                for (int iColumn = 0; iColumn < reader.FieldCount; iColumn++)
+                
+                //  Get primary key.
+                ColDef[iCol].PrimaryKey = PRIMARY_KEY_T.NONE;
+                for (int iType = 1; iType < PRIMARY_KEY_TAGS.Length; iType++)
                 {
-                    // This will give you the value of the current row's column
-                    string columnValue = reader[iColumn].ToString();
-                    System.Console.Write(columnValue + "\t");
-                }
-                System.Console.WriteLine("");
+                    if (strScheCols[iCol].Contains(PRIMARY_KEY_TAGS[iType) == true)
+                        ColDef[iCol].PrimaryKey = (PRIMARY_KEY_T)iType;
+                }   
             }
 
             m_sqliteConn.Close();

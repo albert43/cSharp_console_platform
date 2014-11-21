@@ -8,7 +8,7 @@ using Al.Database;
 
 namespace ConsolePlatform
 {
-    class TableBase
+    public class TableBase
     {
         public String m_strTableName;
         public String m_strDbPath { set; get; }
@@ -21,7 +21,7 @@ namespace ConsolePlatform
             m_strDbPath = strDbPath;
             m_strPassword = strPassword;
 
-            m_hDb = new DatabaseApi(m_strTableName, strPassword);
+            m_hDb = new DatabaseApi(strDbPath, strPassword);
         }
     }
 
@@ -47,7 +47,7 @@ namespace ConsolePlatform
 
             ColsStudent[(int)COLUMNS.ID] = new COLUMN_DEF_S();
             ColsStudent[(int)COLUMNS.ID].strColumnName = "id";
-            ColsStudent[(int)COLUMNS.ID].PrimaryKey = PRIMARY_KEY_T.NOT_AUTO;
+            ColsStudent[(int)COLUMNS.ID].PrimaryKey = PRIMARY_KEY_T.NONE;
 
             ColsStudent[(int)COLUMNS.NAME] = new COLUMN_DEF_S();
             ColsStudent[(int)COLUMNS.NAME].strColumnName = "name";
@@ -59,13 +59,17 @@ namespace ConsolePlatform
             ColsStudent[(int)COLUMNS.CLASS] = new COLUMN_DEF_S();
             ColsStudent[(int)COLUMNS.CLASS].strColumnName = "class";
             ColsStudent[(int)COLUMNS.CLASS].DataType = DATA_T.INTEGER;
-            ColsStudent[(int)COLUMNS.CLASS].PrimaryKey = PRIMARY_KEY_T.NONE;
-            ColsStudent[(int)COLUMNS.CLASS].bNotNull = false;
-            ColsStudent[(int)COLUMNS.CLASS].bUnique = false;
+            ColsStudent[(int)COLUMNS.CLASS].PrimaryKey = PRIMARY_KEY_T.NOT_AUTO;
+            Data df = new Data(DATA_T.INTEGER);
+            df.m_i = 3;
+            ColsStudent[(int)COLUMNS.CLASS].DefaultValue = df;
+            ColsStudent[(int)COLUMNS.CLASS].bNotNull = true;
+            ColsStudent[(int)COLUMNS.CLASS].bUnique = true;
             ColsStudent[(int)COLUMNS.CLASS].ForeignKey = new FOREIGN_KEY_S();
             ColsStudent[(int)COLUMNS.CLASS].ForeignKey.strForeignTable = "class";
             ColsStudent[(int)COLUMNS.CLASS].ForeignKey.strColumnName = new string[1];
             ColsStudent[(int)COLUMNS.CLASS].ForeignKey.strColumnName[0] = "id";
+           
 
             TABLE_DEF_S tblStudent = new TABLE_DEF_S();
             tblStudent.strTableName = "student";
@@ -105,13 +109,14 @@ namespace ConsolePlatform
             ColsClass[(int)COLUMNS.ID] = new COLUMN_DEF_S();
             ColsClass[(int)COLUMNS.ID].strColumnName = "id";
             ColsClass[(int)COLUMNS.ID].PrimaryKey = PRIMARY_KEY_T.NOT_AUTO;
-
+            
             ColsClass[(int)COLUMNS.NAME] = new COLUMN_DEF_S();
             ColsClass[(int)COLUMNS.NAME].strColumnName = "name";
             ColsClass[(int)COLUMNS.NAME].DataType = DATA_T.STRING;
             ColsClass[(int)COLUMNS.NAME].PrimaryKey = PRIMARY_KEY_T.NONE;
             ColsClass[(int)COLUMNS.NAME].bNotNull = true;
             ColsClass[(int)COLUMNS.NAME].bUnique = false;
+            
 
             TABLE_DEF_S tblClass = new TABLE_DEF_S();
             tblClass.strTableName = "class";
