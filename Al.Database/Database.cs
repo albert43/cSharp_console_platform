@@ -485,39 +485,9 @@ namespace Al.Database
                 ColDef[iCol].PrimaryKey = PRIMARY_KEY_T.NONE;
                 for (int iType = 1; iType < PRIMARY_KEY_TAGS.Length; iType++)
                 {
-                    if (strScheCols[iCol].Contains(PRIMARY_KEY_TAGS[iType) == true)
+                    if (strScheCols[iCol].Contains(PRIMARY_KEY_TAGS[iType]) == true)
                         ColDef[iCol].PrimaryKey = (PRIMARY_KEY_T)iType;
-                }   
-            }
-
-            m_sqliteConn.Close();
-        }
-
-        public void getTable1(String strTableName, ref COLUMN_DEF_S[] ColumnDef)
-        {
-            System.Data.DataTable tbl;
-
-            m_sqliteConn.Open();
-            tbl = m_sqliteConn.GetSchema("Tables");
-            
-            System.Data.DataColumn col;
-            System.Console.WriteLine("Talbe");
-            for (int i = 0; i < tbl.Columns.Count; i++)
-            {
-                col = tbl.Columns[i];
-                System.Console.WriteLine(col.ColumnName);
-                System.Console.WriteLine(col.DataType);
-                System.Console.WriteLine("---------");
-            }
-
-            System.Data.DataTable columns = m_sqliteConn.GetSchema("Columns");
-            System.Console.WriteLine("Column");
-            for (int i = 0; i < tbl.Columns.Count; i++)
-            {
-                col = columns.Columns[i];
-                System.Console.WriteLine(col.ColumnName);
-                System.Console.WriteLine(col.DataType);
-                System.Console.WriteLine("---------");
+                }
             }
 
             m_sqliteConn.Close();
